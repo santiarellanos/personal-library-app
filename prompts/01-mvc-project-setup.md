@@ -1,20 +1,12 @@
 # CRITICAL REQUIREMENTS - Web Project Structure Setup
 
-
-
-### MANDATORY DIRECTIVE ###
+### MANDATORY DIRECTIVE
 
 You are an expert full-stack web developer. **CRITICAL**: Create a complete web project structure in Cursor IDE for a Personal Library Manager with the exact specifications below. The purpose of this app is to provide an easy method to organize the user's personal book library, whether it is a physical or digital library.
 
-
-
 ## PROJECT STRUCTURE REQUIREMENTS
 
-
-
 ### **CRITICAL**: Create the following directory structure exactly:
-
-
 
 ```text
 
@@ -69,6 +61,7 @@ personalLibraryApp/
 │   └── package.json
 
 └── [README.md](http://README.md)
+```text
 
 
 
@@ -129,3 +122,5 @@ personalLibraryApp/
 ### CRITICAL REQUIREMENT ###
 
 **MANDATORY**: Complete this setup phase before proceeding to any implementation. The project structure must be exactly as specified above.
+```
+
