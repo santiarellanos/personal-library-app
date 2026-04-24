@@ -34,6 +34,26 @@ export default function Search() {
     }
   };
 
+  const handleSaveBook = async (book) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must log in before saving books.");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5001/api/library/save", book, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      alert("Book saved successfully.");
+    } catch (error) {
+      const msg = error.response?.data?.message || "Failed to save book.";
+      alert(msg);
+    }
+  };
+
   return (
     <MainLayout>
       <div>
@@ -77,6 +97,13 @@ export default function Search() {
               <p style={{ margin: 0 }}>
                 {(book.authors && book.authors.join(", ")) || "Unknown author"}
               </p>
+              <button
+                type="button"
+                onClick={() => handleSaveBook(book)}
+                style={{ marginTop: "10px" }}
+              >
+                Save to Library
+              </button>
             </div>
           ))}
         </div>
