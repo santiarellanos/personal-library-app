@@ -24,8 +24,20 @@ const userSchema = new mongoose.Schema(
     savedBooks: {
       type: [
         {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Book"
+          book: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Book",
+            required: true
+          },
+          format: {
+            type: String,
+            enum: ["Hardcover", "Paperback", "Ebook", "Audiobook"],
+            required: true
+          },
+          addedAt: {
+            type: Date,
+            default: Date.now
+          }
         }
       ],
       default: []

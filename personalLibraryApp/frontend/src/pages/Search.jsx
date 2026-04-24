@@ -7,6 +7,7 @@ export default function Search() {
   const [books, setBooks] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedFormats, setSelectedFormats] = useState({});
 
   const handleSearch = async () => {
     const trimmed = query.trim();
@@ -41,12 +42,18 @@ export default function Search() {
       return;
     }
 
+    const format = selectedFormats[book.googleId] || "Paperback";
+
     try {
-      await axios.post("http://localhost:5001/api/library/save", book, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      await axios.post(
+        "http://localhost:5001/api/library/save",
+        { ...book, format },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
+      );
       alert("Book saved successfully.");
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to save book.";
@@ -97,6 +104,21 @@ export default function Search() {
               <p style={{ margin: 0 }}>
                 {(book.authors && book.authors.join(", ")) || "Unknown author"}
               </p>
+              <select
+                value={selectedFormats[book.googleId] || "Paperback"}
+                onChange={(event) =>
+                  setSelectedFormats((prev) => ({
+                    ...prev,
+                    [book.googleId]: event.target.value
+                  }))
+                }
+                style={{ marginTop: "10px", width: "100%" }}
+              >
+                <option value="Hardcover">Hardcover</option>
+                <option value="Paperback">Paperback</option>
+                <option value="Ebook">Ebook</option>
+                <option value="Audiobook">Audiobook</option>
+              </select>
               <button
                 type="button"
                 onClick={() => handleSaveBook(book)}

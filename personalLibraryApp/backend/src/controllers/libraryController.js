@@ -2,10 +2,13 @@ const Book = require("../models/Book");
 const User = require("../models/User");
 
 const saveBookToLibrary = async (req, res) => {
-  const { googleId, title, authors, description, pageCount, coverImage } = req.body;
+  const { googleId, title, authors, description, pageCount, coverImage, format } = req.body;
 
   if (!googleId) {
     return res.status(400).json({ message: "googleId is required." });
+  }
+  if (!format) {
+    return res.status(400).json({ message: "format is required." });
   }
 
   try {
@@ -27,10 +30,10 @@ const saveBookToLibrary = async (req, res) => {
     }
 
     const alreadySaved = user.savedBooks.some(
-      (savedId) => savedId.toString() === book._id.toString()
+      (savedBook) => savedBook.book.toString() === book._id.toString()
     );
     if (!alreadySaved) {
-      user.savedBooks.push(book._id);
+      user.savedBooks.push({ book: book._id, format });
       await user.save();
     }
 

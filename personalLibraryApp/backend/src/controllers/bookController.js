@@ -8,12 +8,14 @@ const searchBooks = async (req, res) => {
   }
 
   try {
-    const response = await axios.get(
-      "https://www.googleapis.com/books/v1/volumes",
-      {
-        params: { q: query }
-      }
-    );
+    const params = { q: query };
+    if (process.env.GOOGLE_BOOKS_API_KEY) {
+      params.key = process.env.GOOGLE_BOOKS_API_KEY;
+    }
+
+    const response = await axios.get("https://www.googleapis.com/books/v1/volumes", {
+      params
+    });
 
     const items = Array.isArray(response.data.items) ? response.data.items : [];
     const books = items.map((item) => {
@@ -30,6 +32,7 @@ const searchBooks = async (req, res) => {
 
     return res.status(200).json(books);
   } catch (error) {
+    console.error("GOOGLE API ERROR:", error.message);
     return res.status(502).json({ message: "Failed to fetch books." });
   }
 };
