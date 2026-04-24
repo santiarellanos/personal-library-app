@@ -5,7 +5,8 @@ import MainLayout from "../components/layout/MainLayout";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5001";
 
-export default function Login() {
+export default function Register() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -17,19 +18,17 @@ export default function Login() {
     setLoading(true);
     try {
       const { data } = await axios.post(
-        `${API_URL}/api/auth/login`,
-        { email, password },
+        `${API_URL}/api/auth/register`,
+        { username, email, password },
         { withCredentials: true }
       );
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
-      setMessage("Signed in successfully.");
+      setMessage("Account created. You are signed in.");
     } catch (err) {
-      const status = err.response?.status;
       const msg =
-        err.response?.data?.message ||
-        (status === 401 ? "Invalid email or password." : "Login failed. Please try again.");
+        err.response?.data?.message || "Registration failed. Please try again.";
       setMessage(msg);
     } finally {
       setLoading(false);
@@ -39,8 +38,20 @@ export default function Login() {
   return (
     <MainLayout>
       <div>
-        <h1>Log in</h1>
+        <h1>Register</h1>
         <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
           <div>
             <label htmlFor="email">Email</label>
             <input
@@ -59,19 +70,20 @@ export default function Login() {
               id="password"
               name="password"
               type="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              minLength={6}
             />
           </div>
           <button type="submit" disabled={loading}>
-            {loading ? "Signing in…" : "Log in"}
+            {loading ? "Creating account…" : "Register"}
           </button>
         </form>
         {message ? <p role="status">{message}</p> : null}
         <p>
-          <Link to="/register">Need an account? Register</Link>
+          <Link to="/login">Already have an account? Log in</Link>
         </p>
       </div>
     </MainLayout>
