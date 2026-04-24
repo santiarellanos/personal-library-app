@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 dotenv.config();
 
 const authRoutes = require("./src/routes/authRoutes");
+const bookRoutes = require("./src/routes/bookRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -33,6 +34,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/books", bookRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
