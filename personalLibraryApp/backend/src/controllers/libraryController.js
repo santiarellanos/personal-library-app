@@ -43,6 +43,44 @@ const saveBookToLibrary = async (req, res) => {
   }
 };
 
+const getUserLibrary = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate("savedBooks.book");
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    return res.status(200).json(user.savedBooks || []);
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to load library." });
+  }
+};
+
+const removeBookFromLibrary = async (req, res) => {
+  const { bookId } = req.params;
+
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    await User.updateOne(
+      { _id: req.user.userId },
+      {
+        $pull: {
+          savedBooks: { book: bookId }
+        }
+      }
+    );
+
+    return res.status(200).json({ message: "Book removed successfully." });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to remove book." });
+  }
+};
+
 module.exports = {
-  saveBookToLibrary
+  saveBookToLibrary,
+  getUserLibrary,
+  removeBookFromLibrary
 };
