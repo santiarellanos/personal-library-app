@@ -85,6 +85,39 @@ const getUserLibrary = async (req, res) => {
   }
 };
 
+const getUserStats = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate("savedBooks.book");
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const savedBooks = user.savedBooks || [];
+    const stats = savedBooks.reduce(
+      (acc, item) => {
+        if (item.shelf === "Read") {
+          acc.booksRead += 1;
+          acc.totalPagesRead += item.book?.pageCount || 0;
+        }
+        if (item.shelf === "Currently Reading") {
+          acc.booksCurrentlyReading += 1;
+        }
+        return acc;
+      },
+      {
+        totalBooks: savedBooks.length,
+        booksRead: 0,
+        booksCurrentlyReading: 0,
+        totalPagesRead: 0
+      }
+    );
+
+    return res.status(200).json(stats);
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to load user stats." });
+  }
+};
+
 const removeBookFromLibrary = async (req, res) => {
   const { bookId } = req.params;
 
@@ -112,6 +145,7 @@ const removeBookFromLibrary = async (req, res) => {
 module.exports = {
   saveBookToLibrary,
   getUserLibrary,
+  getUserStats,
   removeBookFromLibrary,
   updateBookShelf
 };
