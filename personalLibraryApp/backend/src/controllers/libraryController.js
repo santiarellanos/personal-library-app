@@ -2,7 +2,7 @@ const Book = require("../models/Book");
 const User = require("../models/User");
 
 const saveBookToLibrary = async (req, res) => {
-  const { googleId, title, authors, description, pageCount, coverImage, format } = req.body;
+  const { googleId, title, authors, description, pageCount, coverImage, format, shelf } = req.body;
 
   if (!googleId) {
     return res.status(400).json({ message: "googleId is required." });
@@ -33,13 +33,43 @@ const saveBookToLibrary = async (req, res) => {
       (savedBook) => savedBook.book.toString() === book._id.toString()
     );
     if (!alreadySaved) {
-      user.savedBooks.push({ book: book._id, format });
+      user.savedBooks.push({ book: book._id, format, shelf: shelf || "To Read" });
       await user.save();
     }
 
     return res.status(200).json({ message: "Book saved successfully." });
   } catch (error) {
     return res.status(500).json({ message: "Failed to save book." });
+  }
+};
+
+const updateBookShelf = async (req, res) => {
+  const { bookId } = req.params;
+  const { shelf } = req.body;
+  const allowedShelves = ["To Read", "Currently Reading", "Read"];
+
+  if (!allowedShelves.includes(shelf)) {
+    return res.status(400).json({ message: "Invalid shelf value." });
+  }
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: req.user.userId, "savedBooks.book": bookId },
+      {
+        $set: {
+          "savedBooks.$.shelf": shelf
+        }
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Book not found in library." });
+    }
+
+    return res.status(200).json({ message: "Shelf updated successfully.", shelf });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update shelf." });
   }
 };
 
@@ -82,5 +112,6 @@ const removeBookFromLibrary = async (req, res) => {
 module.exports = {
   saveBookToLibrary,
   getUserLibrary,
-  removeBookFromLibrary
+  removeBookFromLibrary,
+  updateBookShelf
 };

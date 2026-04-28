@@ -34,6 +34,11 @@ const userSchema = new mongoose.Schema(
             enum: ["Hardcover", "Paperback", "Ebook", "Audiobook"],
             required: true
           },
+          shelf: {
+            type: String,
+            enum: ["To Read", "Currently Reading", "Read"],
+            default: "To Read"
+          },
           addedAt: {
             type: Date,
             default: Date.now
