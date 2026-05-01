@@ -39,6 +39,16 @@ const userSchema = new mongoose.Schema(
             enum: ["To Read", "Currently Reading", "Read"],
             default: "To Read"
           },
+          notes: {
+            type: String,
+            default: ""
+          },
+          rating: {
+            type: Number,
+            min: 0,
+            max: 5,
+            default: 0
+          },
           addedAt: {
             type: Date,
             default: Date.now

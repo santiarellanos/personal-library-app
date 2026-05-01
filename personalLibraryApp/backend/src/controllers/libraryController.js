@@ -142,10 +142,60 @@ const removeBookFromLibrary = async (req, res) => {
   }
 };
 
+const getBookDetails = async (req, res) => {
+  const { bookId } = req.params;
+
+  try {
+    const user = await User.findById(req.user.userId).populate("savedBooks.book");
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const item = user.savedBooks.find(
+      (savedBook) => savedBook.book?._id?.toString() === bookId
+    );
+    if (!item) {
+      return res.status(404).json({ message: "Book not found in library." });
+    }
+
+    return res.status(200).json(item);
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to load book details." });
+  }
+};
+
+const updateBookDetails = async (req, res) => {
+  const { bookId } = req.params;
+  const { notes, rating } = req.body;
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: req.user.userId, "savedBooks.book": bookId },
+      {
+        $set: {
+          "savedBooks.$.notes": notes ?? "",
+          "savedBooks.$.rating": typeof rating === "number" ? rating : 0
+        }
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Book not found in library." });
+    }
+
+    return res.status(200).json({ message: "Book details updated successfully." });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update book details." });
+  }
+};
+
 module.exports = {
   saveBookToLibrary,
   getUserLibrary,
   getUserStats,
   removeBookFromLibrary,
-  updateBookShelf
+  updateBookShelf,
+  getBookDetails,
+  updateBookDetails
 };

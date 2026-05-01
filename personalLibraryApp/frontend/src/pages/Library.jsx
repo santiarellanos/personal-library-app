@@ -98,15 +98,19 @@ export default function Library() {
                 }}
               >
                 {item.book?.coverImage ? (
-                  <img
-                    src={item.book.coverImage}
-                    alt={item.book.title || "Book cover"}
-                    style={{ width: "100%", height: "220px", objectFit: "cover" }}
-                  />
+                  <Link to={`/library/${item.book?._id}`}>
+                    <img
+                      src={item.book.coverImage}
+                      alt={item.book.title || "Book cover"}
+                      style={{ width: "100%", height: "220px", objectFit: "cover" }}
+                    />
+                  </Link>
                 ) : (
                   <div style={{ width: "100%", height: "220px", background: "#f2f2f2" }} />
                 )}
-                <h3 style={{ margin: 0 }}>{item.book?.title || "Untitled"}</h3>
+                <h3 style={{ margin: 0 }}>
+                  <Link to={`/library/${item.book?._id}`}>{item.book?.title || "Untitled"}</Link>
+                </h3>
                 <p style={{ margin: 0 }}>
                   {(item.book?.authors && item.book.authors.join(", ")) || "Unknown author"}
                 </p>
