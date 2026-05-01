@@ -1,6 +1,12 @@
 const Book = require("../models/Book");
 const User = require("../models/User");
 
+/**
+ * Saves a searched book into the authenticated user's library.
+ * @param {import("express").Request} req - Express request containing book metadata, format, and optional shelf in req.body.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 on success, 400 for invalid input, 401 for unauthorized users, or 500 on failure.
+ */
 const saveBookToLibrary = async (req, res) => {
   const { googleId, title, authors, description, pageCount, coverImage, format, shelf } = req.body;
 
@@ -43,6 +49,12 @@ const saveBookToLibrary = async (req, res) => {
   }
 };
 
+/**
+ * Updates the shelf status for a saved book in the authenticated user's library.
+ * @param {import("express").Request} req - Express request containing bookId in req.params and shelf in req.body.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 with updated shelf, 400 for invalid shelf values, 404 when book is not found, or 500 on failure.
+ */
 const updateBookShelf = async (req, res) => {
   const { bookId } = req.params;
   const { shelf } = req.body;
@@ -73,6 +85,12 @@ const updateBookShelf = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves the authenticated user's populated saved library.
+ * @param {import("express").Request} req - Express request containing userId on req.user from auth middleware.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 with the savedBooks array, 401 if user is not found, or 500 on failure.
+ */
 const getUserLibrary = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate("savedBooks.book");
@@ -85,6 +103,12 @@ const getUserLibrary = async (req, res) => {
   }
 };
 
+/**
+ * Computes reading statistics for the authenticated user based on shelf data.
+ * @param {import("express").Request} req - Express request containing userId on req.user from auth middleware.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 with totalBooks, booksRead, booksCurrentlyReading, and totalPagesRead; 401 if user is not found; or 500 on failure.
+ */
 const getUserStats = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate("savedBooks.book");
@@ -118,6 +142,12 @@ const getUserStats = async (req, res) => {
   }
 };
 
+/**
+ * Removes a saved book entry from the authenticated user's library.
+ * @param {import("express").Request} req - Express request containing bookId in req.params and userId in req.user.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 on success, 401 if user is not found, or 500 on failure.
+ */
 const removeBookFromLibrary = async (req, res) => {
   const { bookId } = req.params;
 
@@ -142,6 +172,12 @@ const removeBookFromLibrary = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves the details for a single saved book in the authenticated user's library.
+ * @param {import("express").Request} req - Express request containing bookId in req.params and userId in req.user.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 with one saved book object, 401 if user is not found, 404 if book is not in the library, or 500 on failure.
+ */
 const getBookDetails = async (req, res) => {
   const { bookId } = req.params;
 
@@ -164,6 +200,12 @@ const getBookDetails = async (req, res) => {
   }
 };
 
+/**
+ * Updates notes and rating for a specific saved book in the authenticated user's library.
+ * @param {import("express").Request} req - Express request containing bookId in req.params and notes/rating in req.body.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 on success, 404 if book is not found in the library, or 500 on failure.
+ */
 const updateBookDetails = async (req, res) => {
   const { bookId } = req.params;
   const { notes, rating } = req.body;

@@ -2,10 +2,21 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
+/**
+ * Creates a signed JWT for an authenticated user.
+ * @param {string} userId - The MongoDB user identifier used as JWT payload.
+ * @returns {string} A signed JWT string that expires in 7 days.
+ */
 const signToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
+/**
+ * Registers a new user account and returns an authentication token.
+ * @param {import("express").Request} req - Express request containing username, email, and password in req.body.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 201 with token and user profile, 400 for missing fields, 409 for duplicates, or 500 on failure.
+ */
 const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -34,6 +45,12 @@ const registerUser = async (req, res) => {
   }
 };
 
+/**
+ * Authenticates an existing user and returns an authentication token.
+ * @param {import("express").Request} req - Express request containing email and password in req.body.
+ * @param {import("express").Response} res - Express response used to return JSON status and payload.
+ * @returns {Promise<import("express").Response>} Returns 200 with token and user profile, 400 for missing credentials, 401 for invalid login, or 500 on failure.
+ */
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
