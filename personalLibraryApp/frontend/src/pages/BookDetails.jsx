@@ -48,6 +48,12 @@ export default function BookDetails() {
     }
   };
 
+  const titleQuery = item?.book?.title || "";
+  const authorQuery = item?.book?.authors?.[0] || "";
+  const purchaseQuery = encodeURIComponent(`${titleQuery} ${authorQuery}`.trim());
+  const amazonUrl = `https://www.amazon.com/s?k=${purchaseQuery}`;
+  const barnesUrl = `https://www.barnesandnoble.com/s/${purchaseQuery}`;
+
   return (
     <MainLayout>
       {!item ? (
@@ -103,6 +109,29 @@ export default function BookDetails() {
             >
               Save Changes
             </button>
+            <section style={{ marginTop: "18px" }}>
+              <h3 style={{ marginBottom: "8px" }}>Purchase Options</h3>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <a
+                  href={amazonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pl-btn pl-btn-primary"
+                  style={{ textDecoration: "none", display: "inline-block" }}
+                >
+                  Buy on Amazon
+                </a>
+                <a
+                  href={barnesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pl-btn pl-btn-primary"
+                  style={{ textDecoration: "none", display: "inline-block" }}
+                >
+                  Buy on Barnes & Noble
+                </a>
+              </div>
+            </section>
             {message ? <p className="pl-muted" style={{ marginTop: "10px" }}>{message}</p> : null}
           </div>
         </div>
