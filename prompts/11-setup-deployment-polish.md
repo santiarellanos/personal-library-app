@@ -25,4 +25,3 @@ You are an expert MERN stack developer preparing a project for a university fina
 
 1. Ensure the code comments look professional.
 2. The user should be able to navigate to the backend folder and run `npm run test` to see the Jest tests pass without database connection errors.
-

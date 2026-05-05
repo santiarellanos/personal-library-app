@@ -53,15 +53,15 @@ export default function BookDetails() {
       {!item ? (
         <div>{message || "Loading details..."}</div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: "20px" }}>
+        <div className="pl-detailsGrid">
           {item.book?.coverImage ? (
             <img
               src={item.book.coverImage}
               alt={item.book.title || "Book cover"}
-              style={{ width: "220px", height: "320px", objectFit: "cover" }}
+              className="pl-coverDetails"
             />
           ) : (
-            <div style={{ width: "220px", height: "320px", background: "#f2f2f2" }} />
+            <div className="pl-coverPlaceholderDetails" />
           )}
           <div>
             <h1 style={{ marginTop: 0 }}>{item.book?.title || "Untitled"}</h1>
@@ -74,7 +74,8 @@ export default function BookDetails() {
                 value={notes}
                 onChange={(event) => setNotes(event.target.value)}
                 rows={6}
-                style={{ width: "100%", marginTop: "6px" }}
+                className="pl-textarea"
+                style={{ marginTop: "6px" }}
               />
             </div>
             <div style={{ marginTop: "12px" }}>
@@ -83,6 +84,7 @@ export default function BookDetails() {
                 id="rating"
                 value={rating}
                 onChange={(event) => setRating(Number(event.target.value))}
+                className="pl-select"
                 style={{ marginLeft: "8px" }}
               >
                 <option value={0}>0</option>
@@ -93,10 +95,15 @@ export default function BookDetails() {
                 <option value={5}>5</option>
               </select>
             </div>
-            <button type="button" onClick={handleSave} style={{ marginTop: "16px" }}>
+            <button
+              type="button"
+              onClick={handleSave}
+              className="pl-btn pl-btn-primary"
+              style={{ marginTop: "16px" }}
+            >
               Save Changes
             </button>
-            {message ? <p style={{ marginTop: "10px" }}>{message}</p> : null}
+            {message ? <p className="pl-muted" style={{ marginTop: "10px" }}>{message}</p> : null}
           </div>
         </div>
       )}

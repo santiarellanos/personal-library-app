@@ -68,40 +68,44 @@ export default function Search() {
         <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
           <input
             type="text"
+            className="pl-input"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by title or author"
           />
-          <button type="button" onClick={handleSearch} disabled={loading}>
+          <button
+            type="button"
+            className="pl-btn pl-btn-primary"
+            onClick={handleSearch}
+            disabled={loading}
+          >
             {loading ? "Searching..." : "Search"}
           </button>
         </div>
 
         {message ? <p>{message}</p> : null}
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-            gap: "12px"
-          }}
-        >
+        <div className="pl-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}>
           {books.map((book) => (
             <div
               key={book.googleId}
-              style={{ border: "1px solid #ddd", borderRadius: "8px", padding: "10px" }}
+              className="pl-bookCard"
+              style={{ padding: "0 12px 14px" }}
             >
               {book.coverImage ? (
                 <img
                   src={book.coverImage}
                   alt={book.title}
-                  style={{ width: "100%", height: "220px", objectFit: "cover" }}
+                  className="pl-cover"
                 />
               ) : (
-                <div style={{ height: "220px", background: "#f2f2f2" }} />
+                <div className="pl-coverPlaceholder" />
               )}
-              <h3 style={{ margin: "10px 0 6px" }}>{book.title}</h3>
-              <p style={{ margin: 0 }}>
+              <div className="pl-cardBody">
+              <h3 style={{ margin: "10px 0 6px" }} className="pl-muted">
+                {book.title}
+              </h3>
+              <p style={{ margin: 0 }} className="pl-muted">
                 {(book.authors && book.authors.join(", ")) || "Unknown author"}
               </p>
               <select
@@ -112,7 +116,8 @@ export default function Search() {
                     [book.googleId]: event.target.value
                   }))
                 }
-                style={{ marginTop: "10px", width: "100%" }}
+                style={{ marginTop: "10px" }}
+                className="pl-select"
               >
                 <option value="Hardcover">Hardcover</option>
                 <option value="Paperback">Paperback</option>
@@ -122,10 +127,12 @@ export default function Search() {
               <button
                 type="button"
                 onClick={() => handleSaveBook(book)}
+                className="pl-btn pl-btn-primary"
                 style={{ marginTop: "10px" }}
               >
                 Save to Library
               </button>
+              </div>
             </div>
           ))}
         </div>

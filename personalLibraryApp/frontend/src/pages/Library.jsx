@@ -79,64 +79,57 @@ export default function Library() {
           </p>
         ) : (
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))",
-              gap: "14px"
-            }}
+            className="pl-grid"
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}
           >
             {library.map((item) => (
               <article
                 key={item.book?._id || item._id}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: "10px",
-                  padding: "10px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "8px"
-                }}
+                className="pl-bookCard"
+                style={{ padding: "0 12px 14px" }}
               >
                 {item.book?.coverImage ? (
                   <Link to={`/library/${item.book?._id}`}>
                     <img
                       src={item.book.coverImage}
                       alt={item.book.title || "Book cover"}
-                      style={{ width: "100%", height: "220px", objectFit: "cover" }}
+                      className="pl-cover"
                     />
                   </Link>
                 ) : (
-                  <div style={{ width: "100%", height: "220px", background: "#f2f2f2" }} />
+                  <div className="pl-coverPlaceholder" />
                 )}
-                <h3 style={{ margin: 0 }}>
-                  <Link to={`/library/${item.book?._id}`}>{item.book?.title || "Untitled"}</Link>
-                </h3>
-                <p style={{ margin: 0 }}>
+                <div className="pl-cardBody">
+                  <h3 style={{ margin: 0 }}>
+                    <Link className="pl-cardLink" to={`/library/${item.book?._id}`}>
+                      {item.book?.title || "Untitled"}
+                    </Link>
+                  </h3>
+                  <p style={{ margin: 0 }} className="pl-muted">
                   {(item.book?.authors && item.book.authors.join(", ")) || "Unknown author"}
-                </p>
-                <p style={{ margin: 0 }}>Format: {item.format}</p>
-                <select
-                  value={item.shelf}
-                  onChange={(event) => handleShelfChange(item.book?._id, event.target.value)}
-                >
-                  <option value="To Read">To Read</option>
-                  <option value="Currently Reading">Currently Reading</option>
-                  <option value="Read">Read</option>
-                </select>
-                <button
-                  type="button"
-                  onClick={() => handleRemove(item.book?._id)}
-                  style={{
-                    background: "#dc2626",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "8px",
-                    cursor: "pointer"
-                  }}
-                >
-                  Remove
-                </button>
+                  </p>
+                  <p style={{ margin: 0 }} className="pl-muted">
+                    Format: {item.format}
+                  </p>
+                  <select
+                    value={item.shelf}
+                    onChange={(event) => handleShelfChange(item.book?._id, event.target.value)}
+                    className="pl-select"
+                    style={{ marginTop: "2px" }}
+                  >
+                    <option value="To Read">To Read</option>
+                    <option value="Currently Reading">Currently Reading</option>
+                    <option value="Read">Read</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(item.book?._id)}
+                    className="pl-btn pl-btn-danger"
+                    style={{ marginTop: "10px" }}
+                  >
+                    Remove
+                  </button>
+                </div>
               </article>
             ))}
           </div>
