@@ -35,6 +35,11 @@ export default function Search() {
     }
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    handleSearch();
+  };
+
   const handleSaveBook = async (book) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -65,23 +70,24 @@ export default function Search() {
     <MainLayout>
       <div>
         <h1>Search Books</h1>
-        <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-          <input
-            type="text"
-            className="pl-input"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by title or author"
-          />
-          <button
-            type="button"
-            className="pl-btn pl-btn-primary"
-            onClick={handleSearch}
-            disabled={loading}
-          >
-            {loading ? "Searching..." : "Search"}
-          </button>
-        </div>
+        <form onSubmit={handleSearchSubmit}>
+          <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+            <input
+              type="text"
+              className="pl-input"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search by title or author"
+            />
+            <button
+              type="submit"
+              className="pl-btn pl-btn-primary"
+              disabled={loading}
+            >
+              {loading ? "Searching..." : "Search"}
+            </button>
+          </div>
+        </form>
 
         {message ? <p>{message}</p> : null}
 

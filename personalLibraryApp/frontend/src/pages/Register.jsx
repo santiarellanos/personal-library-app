@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainLayout from "../components/layout/MainLayout";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5001";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +27,11 @@ export default function Register() {
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
+      if (data.user?.username) {
+        localStorage.setItem("username", data.user.username);
+      }
       setMessage("Account created. You are signed in.");
+      navigate("/");
     } catch (err) {
       const msg =
         err.response?.data?.message || "Registration failed. Please try again.";

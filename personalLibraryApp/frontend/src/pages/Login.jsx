@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainLayout from "../components/layout/MainLayout";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:5001";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -24,7 +26,11 @@ export default function Login() {
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
+      if (data.user?.username) {
+        localStorage.setItem("username", data.user.username);
+      }
       setMessage("Signed in successfully.");
+      navigate("/");
     } catch (err) {
       const status = err.response?.status;
       const msg =
