@@ -29,3 +29,4 @@ Update the database schema to allow a "Did Not Finish" reading status. Update th
 
 1. Register a new book and successfully change its status to "Did Not Finish" without throwing a database 500 error.
 2. Navigate to the Library page and verify clicking the different shelf filters correctly hides and shows the relevant books.
+
