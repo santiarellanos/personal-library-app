@@ -58,7 +58,7 @@ const saveBookToLibrary = async (req, res) => {
 const updateBookShelf = async (req, res) => {
   const { bookId } = req.params;
   const { shelf } = req.body;
-  const allowedShelves = ["To Read", "Currently Reading", "Read"];
+  const allowedShelves = ["To Read", "Currently Reading", "Read", "Did Not Finish"];
 
   if (!allowedShelves.includes(shelf)) {
     return res.status(400).json({ message: "Invalid shelf value." });

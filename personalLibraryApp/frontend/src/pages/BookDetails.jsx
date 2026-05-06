@@ -73,6 +73,35 @@ export default function BookDetails() {
             <h1 style={{ marginTop: 0 }}>{item.book?.title || "Untitled"}</h1>
             <p>{(item.book?.authors && item.book.authors.join(", ")) || "Unknown author"}</p>
             <p>Format: {item.format}</p>
+            <div style={{ marginTop: "12px" }}>
+              <label htmlFor="shelf">Reading status</label>
+              <select
+                id="shelf"
+                value={item.shelf}
+                onChange={async (event) => {
+                  const nextShelf = event.target.value;
+                  try {
+                    await axios.patch(
+                      `http://localhost:5001/api/library/update-shelf/${bookId}`,
+                      { shelf: nextShelf },
+                      { headers: getAuthHeaders() }
+                    );
+                    setItem((prev) => ({ ...prev, shelf: nextShelf }));
+                  } catch (error) {
+                    setMessage(
+                      error.response?.data?.message || "Failed to update shelf."
+                    );
+                  }
+                }}
+                className="pl-select"
+                style={{ marginTop: "6px", display: "block", maxWidth: "280px" }}
+              >
+                <option value="To Read">To Read</option>
+                <option value="Currently Reading">Currently Reading</option>
+                <option value="Read">Read</option>
+                <option value="Did Not Finish">Did Not Finish</option>
+              </select>
+            </div>
             <div style={{ marginTop: "16px" }}>
               <label htmlFor="notes">Personal Notes</label>
               <textarea

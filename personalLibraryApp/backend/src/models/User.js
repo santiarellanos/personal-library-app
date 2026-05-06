@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
           },
           shelf: {
             type: String,
-            enum: ["To Read", "Currently Reading", "Read"],
+            enum: ["To Read", "Currently Reading", "Read", "Did Not Finish"],
             default: "To Read"
           },
           notes: {

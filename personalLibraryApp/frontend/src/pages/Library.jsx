@@ -5,6 +5,7 @@ import MainLayout from "../components/layout/MainLayout";
 
 export default function Library() {
   const [library, setLibrary] = useState([]);
+  const [filter, setFilter] = useState("All");
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
@@ -28,6 +29,9 @@ export default function Library() {
 
     fetchLibrary();
   }, []);
+
+  const filteredLibrary =
+    filter === "All" ? library : library.filter((item) => item.shelf === filter);
 
   const handleShelfChange = async (bookId, nextShelf) => {
     try {
@@ -78,61 +82,89 @@ export default function Library() {
             <Link to="/search">Search page</Link>.
           </p>
         ) : (
-          <div
-            className="pl-grid"
-            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}
-          >
-            {library.map((item) => (
-              <article
-                key={item.book?._id || item._id}
-                className="pl-bookCard"
-                style={{ padding: "0 12px 14px" }}
+          <>
+            <div style={{ marginBottom: "14px" }}>
+              <label htmlFor="library-shelf-filter" className="pl-muted">
+                Filter by shelf
+              </label>
+              <select
+                id="library-shelf-filter"
+                className="pl-select"
+                value={filter}
+                onChange={(event) => setFilter(event.target.value)}
+                style={{ display: "block", marginTop: "6px", maxWidth: "280px" }}
               >
-                {item.book?.coverImage ? (
-                  <Link to={`/library/${item.book?._id}`}>
-                    <img
-                      src={item.book.coverImage}
-                      alt={item.book.title || "Book cover"}
-                      className="pl-cover"
-                    />
-                  </Link>
-                ) : (
-                  <div className="pl-coverPlaceholder" />
-                )}
-                <div className="pl-cardBody">
-                  <h3 style={{ margin: 0 }}>
-                    <Link className="pl-cardLink" to={`/library/${item.book?._id}`}>
-                      {item.book?.title || "Untitled"}
-                    </Link>
-                  </h3>
-                  <p style={{ margin: 0 }} className="pl-muted">
-                  {(item.book?.authors && item.book.authors.join(", ")) || "Unknown author"}
-                  </p>
-                  <p style={{ margin: 0 }} className="pl-muted">
-                    Format: {item.format}
-                  </p>
-                  <select
-                    value={item.shelf}
-                    onChange={(event) => handleShelfChange(item.book?._id, event.target.value)}
-                    className="pl-select"
-                    style={{ marginTop: "2px" }}
+                <option value="All">All</option>
+                <option value="Currently Reading">Currently Reading</option>
+                <option value="To Read">To Read</option>
+                <option value="Read">Read</option>
+                <option value="Did Not Finish">Did Not Finish</option>
+              </select>
+            </div>
+            {!filteredLibrary.length ? (
+              <p>No books found on this shelf.</p>
+            ) : (
+              <div
+                className="pl-grid"
+                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}
+              >
+                {filteredLibrary.map((item) => (
+                  <article
+                    key={item.book?._id || item._id}
+                    className="pl-bookCard"
+                    style={{ padding: "0 12px 14px" }}
                   >
-                    <option value="To Read">To Read</option>
-                    <option value="Currently Reading">Currently Reading</option>
-                    <option value="Read">Read</option>
-                  </select>
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(item.book?._id)}
-                    className="pl-btn pl-btn-danger"
-                    style={{ marginTop: "10px" }}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+                    {item.book?.coverImage ? (
+                      <Link to={`/library/${item.book?._id}`}>
+                        <img
+                          src={item.book.coverImage}
+                          alt={item.book.title || "Book cover"}
+                          className="pl-cover"
+                        />
+                      </Link>
+                    ) : (
+                      <div className="pl-coverPlaceholder" />
+                    )}
+                    <div className="pl-cardBody">
+                      <h3 style={{ margin: 0 }}>
+                        <Link className="pl-cardLink" to={`/library/${item.book?._id}`}>
+                          {item.book?.title || "Untitled"}
+                        </Link>
+                      </h3>
+                      <p style={{ margin: 0 }} className="pl-muted">
+                        {(item.book?.authors && item.book.authors.join(", ")) ||
+                          "Unknown author"}
+                      </p>
+                      <p style={{ margin: 0 }} className="pl-muted">
+                        Format: {item.format}
+                      </p>
+                      <select
+                        value={item.shelf}
+                        onChange={(event) =>
+                          handleShelfChange(item.book?._id, event.target.value)
+                        }
+                        className="pl-select"
+                        style={{ marginTop: "2px" }}
+                      >
+                        <option value="To Read">To Read</option>
+                        <option value="Currently Reading">Currently Reading</option>
+                        <option value="Read">Read</option>
+                        <option value="Did Not Finish">Did Not Finish</option>
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => handleRemove(item.book?._id)}
+                        className="pl-btn pl-btn-danger"
+                        style={{ marginTop: "10px" }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </MainLayout>
